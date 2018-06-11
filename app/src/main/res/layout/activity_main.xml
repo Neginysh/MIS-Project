@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <com.example.lenovocom.lieortruth.SwipeButton
+        android:layout_marginTop="11dp"
+        android:id="@+id/swipe_truth_a"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:layout_marginStart="5dp"
+        app:button_background="@drawable/shape_button"
+        app:button_bottom_padding="15dp"
+        app:button_image_disabled="@drawable/ic_arrow_forward_black_24dp"
+        app:button_image_enabled="@drawable/ic_arrow_forward_black_24dp"
+        app:button_image_height="60dp"
+        app:button_image_width="80dp"
+        app:button_left_padding="15dp"
+        app:button_right_padding="15dp"
+        app:button_top_padding="15dp"
+        app:has_activate_state="true"
+        app:initial_state= "disabled"
+        app:inner_text="Truth"
+        app:inner_text_background="@drawable/shape_rounded"
+        app:inner_text_bottom_padding="11dp"
+        app:inner_text_color="@android:color/white"
+        app:inner_text_size="15sp"
+        app:inner_text_top_padding="11dp" />
+
+    <com.example.lenovocom.lieortruth.SwipeButton
+        android:layout_marginTop="66dp"
+        android:id="@+id/swipe_lie_a"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:layout_marginStart="5dp"
+        app:button_background="@drawable/shape_button"
+        app:button_bottom_padding="15dp"
+        app:button_image_disabled="@drawable/ic_arrow_forward_black_24dp"
+        app:button_image_enabled="@drawable/ic_arrow_forward_black_24dp"
+        app:button_image_height="60dp"
+        app:button_image_width="80dp"
+        app:button_left_padding="15dp"
+        app:button_right_padding="15dp"
+        app:button_top_padding="15dp"
+        app:has_activate_state="true"
+        app:initial_state="disabled"
+        app:inner_text="Lie"
+        app:inner_text_background="@drawable/shape_rounded"
+        app:inner_text_bottom_padding="11dp"
+        app:inner_text_color="@android:color/white"
+        app:inner_text_size="15sp"
+        app:inner_text_top_padding="11dp" />
+
+    <TextView
+        android:layout_marginTop="160dp"
+        android:id="@+id/question_a"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="What is your name?"
+        android:textSize="16sp"/>
+    <LinearLayout
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:layout_width="0px"
+        android:layout_height="0px" />
+    <EditText
+        android:focusableInTouchMode="true"
+        android:layout_marginTop="200dp"
+        android:id="@+id/answer_a"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <Button
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:id="@+id/next_a"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Next Question"/>
+
+</RelativeLayout>
