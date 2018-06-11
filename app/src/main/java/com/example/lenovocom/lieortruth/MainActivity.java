@@ -1,5 +1,6 @@
 package com.example.lenovocom.lieortruth;
 
+import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -8,12 +9,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnFocusChangeListener, TextWatcher, SensorEventListener {
@@ -57,6 +65,9 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
             @Override
             public void onClick(View v) {
                 Toast.makeText(MainActivity.this, editText.getText().toString(), Toast.LENGTH_SHORT).show();
+                sensorManager.unregisterListener(MainActivity.this);
+
+
             }
         });
 
@@ -76,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
         editText = (EditText) findViewById(R.id.answer_a);
         button = (Button) findViewById(R.id.next_a);
         editText.clearFocus();
+
         sensorManager = (SensorManager) getSystemService(this.SENSOR_SERVICE);
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         sensorManager.registerListener(this, sensor, sensorManager.SENSOR_DELAY_NORMAL);
@@ -114,6 +126,8 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
         sensorY = event.values[1];
         sensorZ = event.values[2];
         sensorM = magnitude(event.values[0], event.values[1], event.values[2]);
+        Toast.makeText(this, "x :  " + sensorX + " y :  " + sensorY + " z :  " + sensorZ + " m :  " + sensorM, Toast.LENGTH_SHORT).show();
+//        writeToFile(Double.toString(sensorX) ,MainActivity.this); // on internal storage???
     }
 
     @Override
@@ -125,4 +139,18 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
 
         return (double) Math.sqrt(x * x + y * y + z * z);
     }
+
+
+//https://stackoverflow.com/questions/14376807/how-to-read-write-string-from-a-file-in-android
+    // on internal storage???
+//    private void writeToFile(String data,Context context) {
+//        try {
+//            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("config.txt", Context.MODE_PRIVATE));
+//            outputStreamWriter.write(data);
+//            outputStreamWriter.close();
+//        }
+//        catch (IOException e) {
+//            Log.e("Exception", "File write failed: " + e.toString());
+//        }
+//    }
 }
