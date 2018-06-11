@@ -1,5 +1,9 @@
 package com.example.lenovocom.lieortruth;
 
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -12,12 +16,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnFocusChangeListener, TextWatcher {
+public class MainActivity extends AppCompatActivity implements View.OnFocusChangeListener, TextWatcher, SensorEventListener {
     SwipeButton swipeButtonTruth;
     SwipeButton swipeButtonLie;
     TextView textView;
     EditText editText;
     Button button;
+    Sensor sensor;
+    SensorManager sensorManager;
+    double sensorX, sensorY, sensorZ, sensorM;
 
     long etLastDown = 0;
     long etLastDuration = 0;
@@ -28,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         bindViews();
-        
+
         swipeButtonTruth.setOnStateChangeListener(new OnStateChangeListener() {
             @Override
             public void onStateChange(boolean active) {
@@ -68,8 +75,10 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
         textView = (TextView) findViewById(R.id.question_a);
         editText = (EditText) findViewById(R.id.answer_a);
         button = (Button) findViewById(R.id.next_a);
-        findViewById(R.id.question_a).requestFocus();
         editText.clearFocus();
+        sensorManager = (SensorManager) getSystemService(this.SENSOR_SERVICE);
+        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        sensorManager.registerListener(this, sensor, sensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
@@ -96,5 +105,24 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
         etLastDuration = System.currentTimeMillis() - etLastDown;
         Toast.makeText(MainActivity.this, etLastDuration + "", Toast.LENGTH_SHORT).show();
 
+    }
+
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        sensorX = event.values[0];
+        sensorY = event.values[1];
+        sensorZ = event.values[2];
+        sensorM = magnitude(event.values[0], event.values[1], event.values[2]);
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
+    private double magnitude(double x, double y, double z) {
+
+        return (double) Math.sqrt(x * x + y * y + z * z);
     }
 }
