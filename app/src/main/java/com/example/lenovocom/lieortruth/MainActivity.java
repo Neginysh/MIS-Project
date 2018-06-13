@@ -22,27 +22,58 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnFocusChangeListener, TextWatcher, SensorEventListener {
+public class MainActivity extends AppCompatActivity implements View.OnFocusChangeListener, TextWatcher, SensorEventListener, View.OnClickListener {
     SwipeButton swipeButtonTruth;
     SwipeButton swipeButtonLie;
     TextView textView;
     EditText editText;
     Button button;
+
     Sensor sensor;
     SensorManager sensorManager;
-    double sensorX, sensorY, sensorZ, sensorM;
+    float sensorX, sensorY, sensorZ, sensorM;
+    List<Float> listSensorX =  new ArrayList<>();
+    List<Float>listSensorY = new ArrayList<>();
+    List<Float>listSensorZ = new ArrayList<>();
+    List<Float>listSensorM = new ArrayList<>();
+    float avgSensorX, avgSensorY, avgSensorZ, avgSensorM;
 
+    double swipeButtonTruthDuration = 0;
+    double swipeButtonLieDuration = 0;
     long etLastDown = 0;
     long etLastDuration = 0;
+
+    DataBaseHandler dataBaseHandler;
+    static final String DB_NAME = "featuresDB.sql";
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        bindViews();
+        init();
+
+        // To calculate the time typing the answer in edittext the time is considered from when the user tap on editttext(Focus) till the last change they make on edittext
+        editText.setOnFocusChangeListener(this);
+        editText.addTextChangedListener(this);
+
+        button.setOnClickListener(this);
+
+
+    }
+
+
+    void init() {
+        swipeButtonTruth = (SwipeButton) findViewById(R.id.swipe_truth_a);
+        swipeButtonLie = (SwipeButton) findViewById(R.id.swipe_lie_a);
+        textView = (TextView) findViewById(R.id.question_a);
+        editText = (EditText) findViewById(R.id.answer_a);
+        button = (Button) findViewById(R.id.next);
+        editText.clearFocus();
 
         swipeButtonTruth.setOnStateChangeListener(new OnStateChangeListener() {
             @Override
@@ -50,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
                 if (active) swipeButtonLie.setEnabled(false);
                 else swipeButtonLie.setEnabled(true);
                 Toast.makeText(MainActivity.this, swipeButtonTruth.swipeDuration() + " " + active, Toast.LENGTH_SHORT).show();
+                swipeButtonTruthDuration = swipeButtonTruth.swipeDuration();
             }
         });
         swipeButtonLie.setOnStateChangeListener(new OnStateChangeListener() {
@@ -58,58 +90,30 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
                 if (active) swipeButtonTruth.setEnabled(false);
                 else swipeButtonTruth.setEnabled(true);
                 Toast.makeText(MainActivity.this, swipeButtonLie.swipeDuration() + " " + active, Toast.LENGTH_SHORT).show();
+                swipeButtonLieDuration = swipeButtonLie.swipeDuration();
             }
         });
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(MainActivity.this, editText.getText().toString(), Toast.LENGTH_SHORT).show();
-                sensorManager.unregisterListener(MainActivity.this);
-
-
-            }
-        });
-
-
-        // To calculate the time typing the answer in edittext the time is considered from when the user tap on editttext(Focus) till the last change they make on edittext
-        editText.setOnFocusChangeListener(this);
-        editText.addTextChangedListener(this);
-
-
-
-
-    }
-    void bindViews() {
-        swipeButtonTruth = (SwipeButton) findViewById(R.id.swipe_truth_a);
-        swipeButtonLie = (SwipeButton) findViewById(R.id.swipe_lie_a);
-        textView = (TextView) findViewById(R.id.question_a);
-        editText = (EditText) findViewById(R.id.answer_a);
-        button = (Button) findViewById(R.id.next_a);
-        editText.clearFocus();
 
         sensorManager = (SensorManager) getSystemService(this.SENSOR_SERVICE);
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         sensorManager.registerListener(this, sensor, sensorManager.SENSOR_DELAY_NORMAL);
+
+        dataBaseHandler = new DataBaseHandler(MainActivity.this, DB_NAME, null, 1);
     }
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
-        etLastDown = 0;
+        etLastDown = 0;                                     // if edidtext is focused again
         etLastDown = System.currentTimeMillis();
         Toast.makeText(MainActivity.this, etLastDown + "", Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-    }
 
     @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-    }
-
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {}
     @Override
     public void afterTextChanged(Editable s) {
         if (etLastDown == 0)
@@ -120,6 +124,8 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
     }
 
 
+
+
     @Override
     public void onSensorChanged(SensorEvent event) {
         sensorX = event.values[0];
@@ -128,16 +134,55 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
         sensorM = magnitude(event.values[0], event.values[1], event.values[2]);
         Toast.makeText(this, "x :  " + sensorX + " y :  " + sensorY + " z :  " + sensorZ + " m :  " + sensorM, Toast.LENGTH_SHORT).show();
 //        writeToFile(Double.toString(sensorX) ,MainActivity.this); // on internal storage???
+        listSensorX.add(sensorX);
+        listSensorY.add(sensorY);
+        listSensorZ.add(sensorZ);
+        listSensorM.add(sensorM);
+
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
     }
 
-    private double magnitude(double x, double y, double z) {
+    private float magnitude(double x, double y, double z) {
 
-        return (double) Math.sqrt(x * x + y * y + z * z);
+        return (float) Math.sqrt(x * x + y * y + z * z);
+    }
+
+    private float average(List<Float> sensorDataList) {
+        float temp = 0;
+        if (sensorDataList == null)
+            return 0;
+        else {
+            for (int i = 0; i < sensorDataList.size(); i++) {
+                temp = temp + sensorDataList.get(i);
+            }
+            return temp / sensorDataList.size();
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+
+        if (v.getId() == R.id.next)
+            Toast.makeText(MainActivity.this, editText.getText().toString(), Toast.LENGTH_SHORT).show();
+
+        sensorManager.unregisterListener(MainActivity.this);
+
+        avgSensorX = average(listSensorX);
+        avgSensorY = average(listSensorY);
+        avgSensorZ = average(listSensorZ);
+        avgSensorM = average(listSensorM);
+
+
+        dataBaseHandler.insertToDB(avgSensorX,
+                avgSensorY,
+                avgSensorZ,
+                avgSensorM,
+                etLastDuration,
+                swipeButtonTruthDuration,
+                swipeButtonLieDuration);
     }
 
 
@@ -153,4 +198,6 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
 //            Log.e("Exception", "File write failed: " + e.toString());
 //        }
 //    }
+
+
 }
