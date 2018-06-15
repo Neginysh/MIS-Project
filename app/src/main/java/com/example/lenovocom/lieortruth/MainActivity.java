@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnFocusChangeListener, TextWatcher, SensorEventListener, View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnFocusChangeListener, TextWatcher, SensorEventListener, View.OnClickListener, View.OnTouchListener {
     SwipeButton swipeButtonTruth;
     SwipeButton swipeButtonLie;
     TextView textView;
@@ -42,10 +42,13 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
     List<Float>listSensorM = new ArrayList<>();
     float avgSensorX, avgSensorY, avgSensorZ, avgSensorM;
 
+    List<Float> btnPressureList = new ArrayList<>();
+
     double swipeButtonTruthDuration = 0;
     double swipeButtonLieDuration = 0;
     long etLastDown = 0;
     long etLastDuration = 0;
+
 
     DataBaseHandler dataBaseHandler;
     static final String DB_NAME = "featuresDB.sql";
@@ -62,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
         editText.addTextChangedListener(this);
 
         button.setOnClickListener(this);
+        button.setOnTouchListener(this);
 
 
     }
@@ -132,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
         sensorY = event.values[1];
         sensorZ = event.values[2];
         sensorM = magnitude(event.values[0], event.values[1], event.values[2]);
-        Toast.makeText(this, "x :  " + sensorX + " y :  " + sensorY + " z :  " + sensorZ + " m :  " + sensorM, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "x :  " + sensorX + " y :  " + sensorY + " z :  " + sensorZ + " m :  " + sensorM, Toast.LENGTH_SHORT).show();
 //        writeToFile(Double.toString(sensorX) ,MainActivity.this); // on internal storage???
         listSensorX.add(sensorX);
         listSensorY.add(sensorY);
@@ -166,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
     public void onClick(View v) {
 
         if (v.getId() == R.id.next)
-            Toast.makeText(MainActivity.this, editText.getText().toString(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(MainActivity.this, editText.getText().toString(), Toast.LENGTH_SHORT).show();
 
         sensorManager.unregisterListener(MainActivity.this);
 
@@ -186,18 +190,27 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
     }
 
 
-//https://stackoverflow.com/questions/14376807/how-to-read-write-string-from-a-file-in-android
-    // on internal storage???
-//    private void writeToFile(String data,Context context) {
-//        try {
-//            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("config.txt", Context.MODE_PRIVATE));
-//            outputStreamWriter.write(data);
-//            outputStreamWriter.close();
-//        }
-//        catch (IOException e) {
-//            Log.e("Exception", "File write failed: " + e.toString());
-//        }
-//    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        sensorManager.unregisterListener(this);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        sensorManager.registerListener(this, sensor, sensorManager.SENSOR_DELAY_NORMAL);
+    }
 
+//measure pressure on button when touched
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        float pressure = 1000;
+        if (v.getId() == R.id.next) {
+            pressure = event.getPressure();
+            Toast.makeText(this, pressure + "", Toast.LENGTH_SHORT).show();
+            btnPressureList.add(pressure);
+        }
+        return false;
+    }
 }
