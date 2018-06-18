@@ -17,3 +17,8 @@ https://stackoverflow.com/questions/9650265/how-do-disable-paging-by-swiping-wit
 	// To calculate the time typing the answer in edittext the time is considered from when the user taps on editttext(Focus) till the last change they make on edittext
 
 swipebuttons are measurements of decision making time when someone wants to tell lie or truth
+
+
+
+
+ref to DB: http://www.vogella.com/tutorials/AndroidSQLite/article.html
