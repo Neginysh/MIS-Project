@@ -17,6 +17,7 @@ public class AnswerFeatureDataAccess {
 
     public static final String TABLE_NAME = "answer_features";
     public static final String COLUMN_ID = "id";
+    public static final String USER_ID = "userId";
     public static final String TEST_ID = "testId";
     public static final String QUESTION_ID = "questionId";
     public static final String SENSOR_X = "avgSensorX";
@@ -28,14 +29,16 @@ public class AnswerFeatureDataAccess {
     public static final String SB_LIE_DURATION = "swipeButtonLieDuration";
     public static final String ANSWER_TIME = "answerTime";
     public static final String BUTTON_PRESSURE = "btnPressure";
+    public static final String ET_ANSWER = "etAnswer";
 
 
-    private String[] allColumns = {COLUMN_ID, TEST_ID, QUESTION_ID, SENSOR_X, SENSOR_Y, SENSOR_Z, SENSOR_M, ET_DURATION, SB_TRUTH_DURATION, SB_LIE_DURATION, ANSWER_TIME, BUTTON_PRESSURE};
+    private String[] allColumns = {COLUMN_ID, USER_ID, TEST_ID, QUESTION_ID, SENSOR_X, SENSOR_Y, SENSOR_Z, SENSOR_M, ET_DURATION, SB_TRUTH_DURATION, SB_LIE_DURATION, ANSWER_TIME, BUTTON_PRESSURE, ET_ANSWER};
 
     // Create table SQL query
     public static final String CREATE_TABLE =
             "CREATE TABLE " + TABLE_NAME + "("
                     + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + USER_ID + " INT,"
                     + TEST_ID + " INT,"
                     + QUESTION_ID + " INT,"
                     + SENSOR_X + " REAL,"
@@ -47,6 +50,7 @@ public class AnswerFeatureDataAccess {
                     + SB_LIE_DURATION + " REAL,"
                     + ANSWER_TIME + " REAL,"
                     + BUTTON_PRESSURE + " REAL"
+                    + ET_ANSWER + " TEXT"
                     + ")";
 
     public void AnswerFeatureDataAccess(Context context) {
@@ -61,10 +65,11 @@ public class AnswerFeatureDataAccess {
         dbHelper.close();
     }
 
-    public AnswerFeature Create(int testID, int questionId, double sensorX, double sensorY, double sensorZ, double sensorM,
-                                long etDuration, double sbTruth, double sbLie, double answerTime, float btnPressure)
+    public AnswerFeature Create(int userId, int testID, int questionId, double sensorX, double sensorY, double sensorZ, double sensorM,
+                                long etDuration, double sbTruth, double sbLie, double answerTime, float btnPressure, String etAnswer)
     {
         ContentValues values = new ContentValues();
+        values.put(USER_ID, userId);
         values.put(TEST_ID, testID);
         values.put(QUESTION_ID, questionId);
         values.put(SENSOR_X, sensorX);
@@ -76,6 +81,7 @@ public class AnswerFeatureDataAccess {
         values.put(SB_LIE_DURATION, sbLie);
         values.put(ANSWER_TIME, answerTime);
         values.put(BUTTON_PRESSURE, btnPressure);
+        values.put(ET_ANSWER, etAnswer);
 
         long insertId = database.insert(TABLE_NAME, null, values);
         Cursor cursor = database.query(TABLE_NAME, allColumns,COLUMN_ID + " = " + insertId, null,
@@ -113,6 +119,7 @@ public class AnswerFeatureDataAccess {
     public void update(AnswerFeature answerFeature){
         int id = answerFeature.getId();
         ContentValues values = new ContentValues();
+        values.put(USER_ID, answerFeature.getUserId());
         values.put(TEST_ID, answerFeature.getTestId());
         values.put(QUESTION_ID, answerFeature.getQuestionId());
         values.put(SENSOR_X, answerFeature.getAvgSensorX());
@@ -124,6 +131,7 @@ public class AnswerFeatureDataAccess {
         values.put(SB_LIE_DURATION, answerFeature.getSwipeButtonLieDuration());
         values.put(ANSWER_TIME, answerFeature.getAnswerTime());
         values.put(BUTTON_PRESSURE, answerFeature.getBtnPressure());
+        values.put(ET_ANSWER, answerFeature.getEtAnswer());
         database.update(TABLE_NAME, values, COLUMN_ID + " = " + id, null);
     }
 
@@ -132,17 +140,19 @@ public class AnswerFeatureDataAccess {
         AnswerFeature answerFeature = new AnswerFeature();
 
         answerFeature.setId(cursor.getInt(0));
-        answerFeature.setTestId(cursor.getInt(1));
-        answerFeature.setQuestionId(cursor.getInt(2));
-        answerFeature.setAvgSensorX(cursor.getDouble(3));
-        answerFeature.setAvgSensorY(cursor.getDouble(4));
-        answerFeature.setAvgSensorZ(cursor.getDouble(5));
-        answerFeature.setAvgSensorM(cursor.getDouble(6));
-        answerFeature.setEtDuration(cursor.getLong(7));
-        answerFeature.setSwipeButtonTruthDuration(cursor.getDouble(8));
-        answerFeature.setSwipeButtonLieDuration(cursor.getDouble(9));
-        answerFeature.setAnswerTime(cursor.getDouble(10));
-        answerFeature.setBtnPressure(cursor.getFloat(11));
+        answerFeature.setUserId(cursor.getInt(1));
+        answerFeature.setTestId(cursor.getInt(2));
+        answerFeature.setQuestionId(cursor.getInt(3));
+        answerFeature.setAvgSensorX(cursor.getDouble(4));
+        answerFeature.setAvgSensorY(cursor.getDouble(5));
+        answerFeature.setAvgSensorZ(cursor.getDouble(6));
+        answerFeature.setAvgSensorM(cursor.getDouble(7));
+        answerFeature.setEtDuration(cursor.getLong(8));
+        answerFeature.setSwipeButtonTruthDuration(cursor.getDouble(9));
+        answerFeature.setSwipeButtonLieDuration(cursor.getDouble(10));
+        answerFeature.setAnswerTime(cursor.getDouble(11));
+        answerFeature.setBtnPressure(cursor.getFloat(12));
+        answerFeature.setEtAnswer(cursor.getString(13));
 
         return answerFeature;
     }

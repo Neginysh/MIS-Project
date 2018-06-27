@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
     double swipeButtonLieDuration = 0;
     long etLastDown = 0;
     long etLastDuration = 0;
+    String etAnswer = null;
 
 
     DataBaseHandler dataBaseHandler;
@@ -179,14 +180,18 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
         avgSensorZ = average(listSensorZ);
         avgSensorM = average(listSensorM);
 
+        etAnswer = editText.getText().toString();
 
-        dataBaseHandler.insertToDB(avgSensorX,
-                avgSensorY,
-                avgSensorZ,
-                avgSensorM,
-                etLastDuration,
-                swipeButtonTruthDuration,
-                swipeButtonLieDuration);
+
+//        dataBaseHandler.insertToDB(avgSensorX,
+//                avgSensorY,
+//                avgSensorZ,
+//                avgSensorM,
+//                etLastDuration,
+//                swipeButtonTruthDuration,
+//                swipeButtonLieDuration);
+
+        
     }
 
 

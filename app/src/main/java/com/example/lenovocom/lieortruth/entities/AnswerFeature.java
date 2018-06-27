@@ -5,21 +5,25 @@ public class AnswerFeature {
     private int id;
     private int testId;
     private int questionId;
+    private int userId;
     private double avgSensorX;
     private double avgSensorY;
-    private double avgSensorZ ;
+    private double avgSensorZ;
     private double avgSensorM;
     private long etDuration;
     private double swipeButtonTruthDuration;
     private double swipeButtonLieDuration;
     private double answerTime;
     private float btnPressure;
+    private String etAnswer;
 
     public AnswerFeature() {
     }
 
-    public AnswerFeature(int id, int testId, int questionId, double avgSensorX, double avgSensorY, double avgSensorZ, double avgSensorM, long etDuration, double swipeButtonTruthDuration, double swipeButtonLieDuration, double answerTime, float btnPressure) {
+
+    public AnswerFeature(int id, int testId, int questionId, int userId, double avgSensorX, double avgSensorY, double avgSensorZ, double avgSensorM, long etDuration, double swipeButtonTruthDuration, double swipeButtonLieDuration, double answerTime, float btnPressure, String etAnswer) {
         this.id = id;
+        this.userId = userId;
         this.testId = testId;
         this.questionId = questionId;
         this.avgSensorX = avgSensorX;
@@ -31,7 +35,11 @@ public class AnswerFeature {
         this.swipeButtonLieDuration = swipeButtonLieDuration;
         this.answerTime = answerTime;
         this.btnPressure = btnPressure;
+        this.etAnswer = etAnswer;
+
     }
+
+
 
     public int getId() {
         return id;
@@ -40,6 +48,10 @@ public class AnswerFeature {
     public void setId(int id) {
         this.id = id;
     }
+
+    public int getUserId() { return userId; }
+
+    public void setUserId(int userId) { this.userId = userId; }
 
     public int getTestId() {
         return testId;
@@ -128,4 +140,8 @@ public class AnswerFeature {
     public void setBtnPressure(float btnPressure) {
         this.btnPressure = btnPressure;
     }
+
+    public String getEtAnswer() { return etAnswer; }
+
+    public void setEtAnswer(String etAnswer) { this.etAnswer = etAnswer; }
 }
