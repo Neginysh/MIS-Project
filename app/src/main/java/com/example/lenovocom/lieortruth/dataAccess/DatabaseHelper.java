@@ -4,7 +4,9 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.lenovocom.lieortruth.entities.AnswerFeature;
 import com.example.lenovocom.lieortruth.entities.Question;
+import com.example.lenovocom.lieortruth.entities.User;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -24,7 +26,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         // create notes table
+        db.execSQL(UserDataAccess.CREATE_TABLE);
         db.execSQL(QuestionDataAccess.CREATE_TABLE);
+        db.execSQL(TestDataAccess.CREATE_TABLE);
+        db.execSQL(AnswerFeatureDataAccess.CREATE_TABLE);
+
+
     }
 
     // Upgrading database

@@ -25,26 +25,30 @@ public class QuestionDataAccess {
     public static final String CREATE_TABLE =
             "CREATE TABLE " + TABLE_NAME + "("
                     + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                    + COLUMN_TEXT + " TEXT,"
+                    + COLUMN_TEXT + " TEXT"
                     + ")";
 
-    public void QuestionDataAccess(Context context) {
+    public QuestionDataAccess(Context context) {
         dbHelper = new DatabaseHelper(context);
+        open();
+        if (getAll().size() < 1)
+            initQuestions();
+        close();
     }
 
     public void open() throws SQLException {
         database = dbHelper.getWritableDatabase();
     }
 
-    public void close(){
+    public void close() {
         dbHelper.close();
     }
 
-    public Question Create(String text){
+    public Question Create(String text) {
         ContentValues values = new ContentValues();
         values.put(COLUMN_TEXT, text);
         long insertId = database.insert(TABLE_NAME, null, values);
-        Cursor cursor = database.query(TABLE_NAME, allColumns,COLUMN_ID + " = " + insertId, null,
+        Cursor cursor = database.query(TABLE_NAME, allColumns, COLUMN_ID + " = " + insertId, null,
                 null, null, null);
         cursor.moveToFirst();
         Question question = cursorToQuestion(cursor);
@@ -76,7 +80,7 @@ public class QuestionDataAccess {
         return questions;
     }
 
-    public void update(Question question){
+    public void update(Question question) {
         long id = question.getId();
         ContentValues values = new ContentValues();
         values.put(COLUMN_TEXT, question.getText());
@@ -88,6 +92,22 @@ public class QuestionDataAccess {
         question.setId(cursor.getInt(0));
         question.setText(cursor.getString(1));
         return question;
+    }
+
+
+    public void initQuestions() {
+        open();
+        Create("Current living country");
+        Create("Nationality");
+        Create("Number of siblings");
+        Create("Marital Status");
+        Create("Eye Color");
+        Create("Gender");
+        Create("Height in Centimeters");
+        Create("Do you have a criminal record?");
+        Create("What is your current job?");
+        Create("What is your mother's family name?");
+        close();
     }
 
 

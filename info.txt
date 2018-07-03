@@ -21,4 +21,10 @@ swipebuttons are measurements of decision making time when someone wants to tell
 
 
 
-ref to DB: http://www.vogella.com/tutorials/AndroidSQLite/article.html
+ref to make DB: http://www.vogella.com/tutorials/AndroidSQLite/article.html
+
+
+to do: pressure on button
+number of charachters in edittext
+number of characters of question for answertime
+

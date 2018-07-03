@@ -1,6 +1,6 @@
 package com.example.lenovocom.lieortruth;
 
-import android.content.Context;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -9,50 +9,63 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+import com.example.lenovocom.lieortruth.dataAccess.AnswerFeatureDataAccess;
+import com.example.lenovocom.lieortruth.dataAccess.QuestionDataAccess;
+import com.example.lenovocom.lieortruth.dataAccess.TestDataAccess;
+import com.example.lenovocom.lieortruth.entities.Question;
+import com.example.lenovocom.lieortruth.entities.Test;
+
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnFocusChangeListener, TextWatcher, SensorEventListener, View.OnClickListener, View.OnTouchListener {
+
     SwipeButton swipeButtonTruth;
     SwipeButton swipeButtonLie;
     TextView textView;
     EditText editText;
     Button button;
-
     Sensor sensor;
     SensorManager sensorManager;
     float sensorX, sensorY, sensorZ, sensorM;
-    List<Float> listSensorX =  new ArrayList<>();
-    List<Float>listSensorY = new ArrayList<>();
-    List<Float>listSensorZ = new ArrayList<>();
-    List<Float>listSensorM = new ArrayList<>();
+    List<Float> listSensorX = new ArrayList<>();
+    List<Float> listSensorY = new ArrayList<>();
+    List<Float> listSensorZ = new ArrayList<>();
+    List<Float> listSensorM = new ArrayList<>();
     float avgSensorX, avgSensorY, avgSensorZ, avgSensorM;
-
-    List<Float> btnPressureList = new ArrayList<>();
-
     double swipeButtonTruthDuration = 0;
     double swipeButtonLieDuration = 0;
     long etLastDown = 0;
     long etLastDuration = 0;
-    String etAnswer = null;
+    long answerTimeLastDown = 0;
+    double answerTime = 0;
+    String etAnswer = "";
+    float pressure = 0;
+    List<Float> btnPressureList = new ArrayList<>();
+    int btnPressureListNo = 0;
+    float btnPressureListMax = 0;
+    float btnPressureListAvg = 0;
 
+    List<Question> questions;
+    QuestionDataAccess questionDataAccess;
+    int currentQuestionNo = 0;
 
-    DataBaseHandler dataBaseHandler;
-    static final String DB_NAME = "featuresDB.sql";
+    TestDataAccess testDataAccess;
+    Test test;
+
+    AnswerFeatureDataAccess answerFeatureDataAccess = new AnswerFeatureDataAccess(this);
 
 
     @Override
@@ -60,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
+        questionsInit();
 
         // To calculate the time typing the answer in edittext the time is considered from when the user tap on editttext(Focus) till the last change they make on edittext
         editText.setOnFocusChangeListener(this);
@@ -73,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
 
 
     void init() {
+
         swipeButtonTruth = (SwipeButton) findViewById(R.id.swipe_truth_a);
         swipeButtonLie = (SwipeButton) findViewById(R.id.swipe_lie_a);
         textView = (TextView) findViewById(R.id.question_a);
@@ -85,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
             public void onStateChange(boolean active) {
                 if (active) swipeButtonLie.setEnabled(false);
                 else swipeButtonLie.setEnabled(true);
-                Toast.makeText(MainActivity.this, swipeButtonTruth.swipeDuration() + " " + active, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(MainActivity.this, swipeButtonTruth.swipeDuration() + " " + active, Toast.LENGTH_SHORT).show();
                 swipeButtonTruthDuration = swipeButtonTruth.swipeDuration();
             }
         });
@@ -94,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
             public void onStateChange(boolean active) {
                 if (active) swipeButtonTruth.setEnabled(false);
                 else swipeButtonTruth.setEnabled(true);
-                Toast.makeText(MainActivity.this, swipeButtonLie.swipeDuration() + " " + active, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(MainActivity.this, swipeButtonLie.swipeDuration() + " " + active, Toast.LENGTH_SHORT).show();
                 swipeButtonLieDuration = swipeButtonLie.swipeDuration();
             }
         });
@@ -103,32 +118,33 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         sensorManager.registerListener(this, sensor, sensorManager.SENSOR_DELAY_NORMAL);
 
-        dataBaseHandler = new DataBaseHandler(MainActivity.this, DB_NAME, null, 1);
+
     }
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
         etLastDown = 0;                                     // if edidtext is focused again
         etLastDown = System.currentTimeMillis();
-        Toast.makeText(MainActivity.this, etLastDown + "", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(MainActivity.this, etLastDown + "", Toast.LENGTH_SHORT).show();
     }
 
 
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+    }
 
     @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {}
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+    }
+
     @Override
     public void afterTextChanged(Editable s) {
         if (etLastDown == 0)
             etLastDown = System.currentTimeMillis();
         etLastDuration = System.currentTimeMillis() - etLastDown;
-        Toast.makeText(MainActivity.this, etLastDuration + "", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(MainActivity.this, etLastDuration + "", Toast.LENGTH_SHORT).show();
 
     }
-
-
 
 
     @Override
@@ -137,8 +153,6 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
         sensorY = event.values[1];
         sensorZ = event.values[2];
         sensorM = magnitude(event.values[0], event.values[1], event.values[2]);
-//        Toast.makeText(this, "x :  " + sensorX + " y :  " + sensorY + " z :  " + sensorZ + " m :  " + sensorM, Toast.LENGTH_SHORT).show();
-//        writeToFile(Double.toString(sensorX) ,MainActivity.this); // on internal storage???
         listSensorX.add(sensorX);
         listSensorY.add(sensorY);
         listSensorZ.add(sensorZ);
@@ -155,43 +169,38 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
         return (float) Math.sqrt(x * x + y * y + z * z);
     }
 
-    private float average(List<Float> sensorDataList) {
+    private float average(List<Float> dataList) {
         float temp = 0;
-        if (sensorDataList == null)
+        if (dataList == null)
             return 0;
         else {
-            for (int i = 0; i < sensorDataList.size(); i++) {
-                temp = temp + sensorDataList.get(i);
+            for (int i = 0; i < dataList.size(); i++) {
+                temp = temp + dataList.get(i);
             }
-            return temp / sensorDataList.size();
+            return temp / dataList.size();
         }
     }
 
     @Override
     public void onClick(View v) {
 
-        if (v.getId() == R.id.next)
+        if (v.getId() == R.id.next) {
 //            Toast.makeText(MainActivity.this, editText.getText().toString(), Toast.LENGTH_SHORT).show();
 
-        sensorManager.unregisterListener(MainActivity.this);
+            sensorManager.unregisterListener(MainActivity.this);
 
-        avgSensorX = average(listSensorX);
-        avgSensorY = average(listSensorY);
-        avgSensorZ = average(listSensorZ);
-        avgSensorM = average(listSensorM);
+            avgSensorX = average(listSensorX);
+            avgSensorY = average(listSensorY);
+            avgSensorZ = average(listSensorZ);
+            avgSensorM = average(listSensorM);
 
-        etAnswer = editText.getText().toString();
+            etAnswer = editText.getText().toString();
 
+            answerTime = System.currentTimeMillis() - answerTimeLastDown;
 
-//        dataBaseHandler.insertToDB(avgSensorX,
-//                avgSensorY,
-//                avgSensorZ,
-//                avgSensorM,
-//                etLastDuration,
-//                swipeButtonTruthDuration,
-//                swipeButtonLieDuration);
+        }
 
-        
+        fetchNextQuestion();
     }
 
 
@@ -207,15 +216,83 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
         sensorManager.registerListener(this, sensor, sensorManager.SENSOR_DELAY_NORMAL);
     }
 
-//measure pressure on button when touched
+    //measure pressure on button when touched
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        float pressure = 1000;
         if (v.getId() == R.id.next) {
             pressure = event.getPressure();
-            Toast.makeText(this, pressure + "", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, pressure + "", Toast.LENGTH_SHORT).show();
             btnPressureList.add(pressure);
+            btnPressureListNo = btnPressureList.size();
+            btnPressureListMax = Collections.max(btnPressureList);
+            btnPressureListAvg = average(btnPressureList);
         }
         return false;
     }
+
+
+    protected void questionsInit() {
+        testDataAccess = new TestDataAccess(this);
+        testDataAccess.open();
+        test = testDataAccess.Create(Calendar.getInstance().getTime().toString(), false);
+        testDataAccess.close();
+
+        questionDataAccess = new QuestionDataAccess(this);
+        questions = new ArrayList<Question>();
+        questionDataAccess.open();
+        questions = questionDataAccess.getAll();
+        questionDataAccess.close();
+        Collections.shuffle(questions);
+        showQuestion();
+
+    }
+
+    private void showQuestion() {
+        textView.setText(questions.get(currentQuestionNo).getText());
+        resetFormStats();
+
+    }
+
+    private void resetFormStats() {
+        avgSensorX = 0;
+        avgSensorY = 0;
+        avgSensorZ = 0;
+        avgSensorM = 0;
+        swipeButtonTruthDuration = 0;
+        swipeButtonLieDuration = 0;
+        etLastDown = 0;
+        etLastDuration = 0;
+        etAnswer = "";
+        answerTime = 0;
+        pressure = 0;
+        btnPressureList = new ArrayList<>();
+        btnPressureListNo = 0;
+        btnPressureListMax = 0;
+        btnPressureListAvg = 0;
+        editText.clearFocus();
+        editText.setText("");
+
+        swipeButtonTruth.collapseButton(); //make initial state of swipe button disabled
+        swipeButtonLie.collapseButton();
+
+        answerTimeLastDown = System.currentTimeMillis();
+
+
+    }
+
+    private void fetchNextQuestion() {
+        answerFeatureDataAccess.open();
+        answerFeatureDataAccess.Create(test.getId(), questions.get(currentQuestionNo).getId(), avgSensorX, avgSensorY, avgSensorZ, avgSensorM, etLastDuration, swipeButtonTruthDuration, swipeButtonLieDuration, answerTime, btnPressureListMax, etAnswer, btnPressureListAvg, btnPressureListNo);
+        answerFeatureDataAccess.close();
+
+        if (currentQuestionNo < questions.size() - 1)
+            currentQuestionNo = currentQuestionNo + 1;
+        else {
+            Intent myIntent = new Intent(MainActivity.this, FinishActivity.class);
+            MainActivity.this.startActivity(myIntent);
+        }
+        showQuestion();
+    }
+
+
 }

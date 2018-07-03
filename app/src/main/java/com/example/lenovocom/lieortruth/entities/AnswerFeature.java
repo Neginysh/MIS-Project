@@ -5,7 +5,6 @@ public class AnswerFeature {
     private int id;
     private int testId;
     private int questionId;
-    private int userId;
     private double avgSensorX;
     private double avgSensorY;
     private double avgSensorZ;
@@ -14,16 +13,33 @@ public class AnswerFeature {
     private double swipeButtonTruthDuration;
     private double swipeButtonLieDuration;
     private double answerTime;
-    private float btnPressure;
+    private float btnPressureMax;
     private String etAnswer;
+    int btnPressureListNo;
+    float btnPressureListAvg;
 
     public AnswerFeature() {
     }
 
 
-    public AnswerFeature(int id, int testId, int questionId, int userId, double avgSensorX, double avgSensorY, double avgSensorZ, double avgSensorM, long etDuration, double swipeButtonTruthDuration, double swipeButtonLieDuration, double answerTime, float btnPressure, String etAnswer) {
+    public int getBtnPressureListNo() {
+        return btnPressureListNo;
+    }
+
+    public void setBtnPressureListNo(int btnPressureListNo) {
+        this.btnPressureListNo = btnPressureListNo;
+    }
+
+    public float getBtnPressureListAvg() {
+        return btnPressureListAvg;
+    }
+
+    public void setBtnPressureListAvg(float btnPressureListAvg) {
+        this.btnPressureListAvg = btnPressureListAvg;
+    }
+
+    public AnswerFeature(int id, int testId, int questionId, double avgSensorX, double avgSensorY, double avgSensorZ, double avgSensorM, long etDuration, double swipeButtonTruthDuration, double swipeButtonLieDuration, double answerTime, float btnPressureMax, String etAnswer, int btnPressureListNo, float btnPressureListAvg) {
         this.id = id;
-        this.userId = userId;
         this.testId = testId;
         this.questionId = questionId;
         this.avgSensorX = avgSensorX;
@@ -34,8 +50,11 @@ public class AnswerFeature {
         this.swipeButtonTruthDuration = swipeButtonTruthDuration;
         this.swipeButtonLieDuration = swipeButtonLieDuration;
         this.answerTime = answerTime;
-        this.btnPressure = btnPressure;
+        this.btnPressureMax = btnPressureMax;
         this.etAnswer = etAnswer;
+        this.btnPressureListAvg = btnPressureListAvg;
+        this.btnPressureListNo = btnPressureListNo;
+
 
     }
 
@@ -48,10 +67,6 @@ public class AnswerFeature {
     public void setId(int id) {
         this.id = id;
     }
-
-    public int getUserId() { return userId; }
-
-    public void setUserId(int userId) { this.userId = userId; }
 
     public int getTestId() {
         return testId;
@@ -133,12 +148,12 @@ public class AnswerFeature {
         this.answerTime = answerTime;
     }
 
-    public float getBtnPressure() {
-        return btnPressure;
+    public float getBtnPressureMax() {
+        return btnPressureMax;
     }
 
-    public void setBtnPressure(float btnPressure) {
-        this.btnPressure = btnPressure;
+    public void setBtnPressureMax(float btnPressureMax) {
+        this.btnPressureMax = btnPressureMax;
     }
 
     public String getEtAnswer() { return etAnswer; }

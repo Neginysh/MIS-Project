@@ -34,7 +34,7 @@ public class TestDataAccess {
                     + SENT_TO_SERVER + " BOOLEAN"
                     + ")";
 
-    public void TestDataAccess(Context context) {
+    public TestDataAccess(Context context) {
         dbHelper = new DatabaseHelper(context);
     }
 

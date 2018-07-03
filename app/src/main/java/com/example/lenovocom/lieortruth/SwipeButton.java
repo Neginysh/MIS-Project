@@ -59,6 +59,7 @@ public class SwipeButton extends RelativeLayout {
     long lastDown = 0;
     long lastDuration = 0;
 
+
     public SwipeButton(Context context) {
         super(context);
 
@@ -230,6 +231,7 @@ public class SwipeButton extends RelativeLayout {
 
             int initialState = typedArray.getInt(R.styleable.SwipeButton_initial_state, DISABLED);
 
+
             if (initialState == ENABLED) {
                 LayoutParams layoutParamsButton = new LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
@@ -255,6 +257,8 @@ public class SwipeButton extends RelativeLayout {
 
                 active = false;
             }
+
+
 
             centerText.setPadding((int) innerTextLeftPadding,
                     (int) innerTextTopPadding,
@@ -287,7 +291,9 @@ public class SwipeButton extends RelativeLayout {
         setOnTouchListener(getButtonTouchListener());
     }
 
+
 //ref to calculate time of touch : https://stackoverflow.com/questions/11963763/how-to-detect-when-button-pressed-and-released-on-android
+
 
     private OnTouchListener getButtonTouchListener() {
         return new OnTouchListener() {
@@ -393,7 +399,7 @@ public class SwipeButton extends RelativeLayout {
         animatorSet.start();
     }
 
-    private void moveButtonBack() {
+    public void moveButtonBack() {
         final ValueAnimator positionAnimator =
                 ValueAnimator.ofFloat(swipeButtonInner.getX(), 0);
         positionAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -426,7 +432,7 @@ public class SwipeButton extends RelativeLayout {
         animatorSet.start();
     }
 
-    private void collapseButton() {
+    public void collapseButton() {
         int finalWidth;
 
         if (collapsedWidth == ViewGroup.LayoutParams.WRAP_CONTENT) {
@@ -531,4 +537,6 @@ public class SwipeButton extends RelativeLayout {
     public long swipeDuration(){
         return lastDuration;
     }
+
+
 }

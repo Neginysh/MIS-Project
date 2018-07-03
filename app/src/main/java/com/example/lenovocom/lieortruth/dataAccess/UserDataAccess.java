@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.example.lenovocom.lieortruth.UserActivity;
 import com.example.lenovocom.lieortruth.entities.User;
 
 import java.util.ArrayList;
@@ -34,7 +35,8 @@ public class UserDataAccess {
                     + COLUMN_AGE + " INT"
                     + ")";
 
-    public void UserDataAccess(Context context) {
+
+    public UserDataAccess(Context context) {
         dbHelper = new DatabaseHelper(context);
     }
 
