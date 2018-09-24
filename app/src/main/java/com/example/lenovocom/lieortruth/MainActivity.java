@@ -11,7 +11,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -23,10 +22,11 @@ import com.example.lenovocom.lieortruth.dataAccess.TestDataAccess;
 import com.example.lenovocom.lieortruth.entities.Question;
 import com.example.lenovocom.lieortruth.entities.Test;
 
+import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 
@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
     int btnPressureListNo = 0;
     float btnPressureListMax = 0;
     float btnPressureListAvg = 0;
+    int isTruth = 1;
 
     List<Question> questions;
     QuestionDataAccess questionDataAccess;
@@ -88,6 +89,10 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
 
     void init() {
 
+        int swTCounter = 0;
+        int swLCounter = 0;
+
+
         swipeButtonTruth = (SwipeButton) findViewById(R.id.swipe_truth_a);
         swipeButtonLie = (SwipeButton) findViewById(R.id.swipe_lie_a);
         textView = (TextView) findViewById(R.id.question_a);
@@ -101,7 +106,10 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
                 if (active) swipeButtonLie.setEnabled(false);
                 else swipeButtonLie.setEnabled(true);
 //                Toast.makeText(MainActivity.this, swipeButtonTruth.swipeDuration() + " " + active, Toast.LENGTH_SHORT).show();
+                swipeButtonLieDuration = 0;
                 swipeButtonTruthDuration = swipeButtonTruth.swipeDuration();
+                isTruth = 1;
+
             }
         });
         swipeButtonLie.setOnStateChangeListener(new OnStateChangeListener() {
@@ -110,9 +118,12 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
                 if (active) swipeButtonTruth.setEnabled(false);
                 else swipeButtonTruth.setEnabled(true);
 //                Toast.makeText(MainActivity.this, swipeButtonLie.swipeDuration() + " " + active, Toast.LENGTH_SHORT).show();
+                swipeButtonTruthDuration = 0;
                 swipeButtonLieDuration = swipeButtonLie.swipeDuration();
+                isTruth = 0;
             }
         });
+
 
         sensorManager = (SensorManager) getSystemService(this.SENSOR_SERVICE);
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -123,9 +134,8 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
-        etLastDown = 0;                                     // if edidtext is focused again
+        etLastDown = 0;                                     // if editText is focused again the measured time is reset
         etLastDown = System.currentTimeMillis();
-//        Toast.makeText(MainActivity.this, etLastDown + "", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -143,7 +153,10 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
             etLastDown = System.currentTimeMillis();
         etLastDuration = System.currentTimeMillis() - etLastDown;
 //        Toast.makeText(MainActivity.this, etLastDuration + "", Toast.LENGTH_SHORT).show();
-
+//        Toast.makeText(this, String.valueOf(s.length()), Toast.LENGTH_SHORT).show();
+        if (s.length()>0) {
+           etLastDuration = etLastDuration / s.length();    // the spending time on editText is divided by the number of characters
+        }
     }
 
 
@@ -274,7 +287,7 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
 
         swipeButtonTruth.collapseButton(); //make initial state of swipe button disabled
         swipeButtonLie.collapseButton();
-
+        isTruth = 1;
         answerTimeLastDown = System.currentTimeMillis();
 
 
@@ -282,12 +295,23 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
 
     private void fetchNextQuestion() {
         answerFeatureDataAccess.open();
-        answerFeatureDataAccess.Create(test.getId(), questions.get(currentQuestionNo).getId(), avgSensorX, avgSensorY, avgSensorZ, avgSensorM, etLastDuration, swipeButtonTruthDuration, swipeButtonLieDuration, answerTime, btnPressureListMax, etAnswer, btnPressureListAvg, btnPressureListNo);
+        answerFeatureDataAccess.Create(test.getId(), questions.get(currentQuestionNo).getId(), avgSensorX, avgSensorY, avgSensorZ, avgSensorM, etLastDuration, swipeButtonTruthDuration, swipeButtonLieDuration, answerTime, btnPressureListMax, etAnswer, btnPressureListAvg, btnPressureListNo, isTruth);
         answerFeatureDataAccess.close();
+
 
         if (currentQuestionNo < questions.size() - 1)
             currentQuestionNo = currentQuestionNo + 1;
+
         else {
+            TestResult testResult = new TestResult(this); // to make a json out of the features list to post to server
+            PostToServer server = new PostToServer();
+            try {
+                server.Post_JSON(testResult.toJson());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
             Intent myIntent = new Intent(MainActivity.this, FinishActivity.class);
             MainActivity.this.startActivity(myIntent);
         }

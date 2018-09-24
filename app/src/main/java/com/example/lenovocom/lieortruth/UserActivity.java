@@ -17,7 +17,6 @@ public class UserActivity extends AppCompatActivity implements View.OnClickListe
 
     EditText nickName, age;
     Button register;
-
     UserDataAccess userDataAccess;
 
     @Override

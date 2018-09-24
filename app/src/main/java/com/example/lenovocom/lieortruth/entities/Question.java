@@ -7,7 +7,7 @@ public class Question {
     public Question() {
     }
 
-    public Question(int id, String Text) {
+    public Question(int id, String text) {
         this.id = id;
         this.text = text;
     }

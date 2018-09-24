@@ -95,7 +95,8 @@ public class UserDataAccess {
 
     private User cursorToUser(Cursor cursor) {
         User user = new User();
-        user.setNickName(cursor.getString(0));
+        user.setId(cursor.getInt(0));
+        user.setNickName(cursor.getString(1));
         user.setAge(cursor.getInt(1));
         return user;
     }

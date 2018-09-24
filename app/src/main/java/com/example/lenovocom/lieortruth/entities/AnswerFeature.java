@@ -17,6 +17,7 @@ public class AnswerFeature {
     private String etAnswer;
     int btnPressureListNo;
     float btnPressureListAvg;
+    int isTruth;
 
     public AnswerFeature() {
     }
@@ -38,7 +39,16 @@ public class AnswerFeature {
         this.btnPressureListAvg = btnPressureListAvg;
     }
 
-    public AnswerFeature(int id, int testId, int questionId, double avgSensorX, double avgSensorY, double avgSensorZ, double avgSensorM, long etDuration, double swipeButtonTruthDuration, double swipeButtonLieDuration, double answerTime, float btnPressureMax, String etAnswer, int btnPressureListNo, float btnPressureListAvg) {
+
+    public int getIsTruth() {
+        return isTruth;
+    }
+
+    public void setIsTruth(int isTruth) {
+        this.isTruth = isTruth;
+    }
+
+    public AnswerFeature(int id, int testId, int questionId, double avgSensorX, double avgSensorY, double avgSensorZ, double avgSensorM, long etDuration, double swipeButtonTruthDuration, double swipeButtonLieDuration, double answerTime, float btnPressureMax, String etAnswer, int btnPressureListNo, float btnPressureListAvg, int isTruth) {
         this.id = id;
         this.testId = testId;
         this.questionId = questionId;
@@ -54,10 +64,10 @@ public class AnswerFeature {
         this.etAnswer = etAnswer;
         this.btnPressureListAvg = btnPressureListAvg;
         this.btnPressureListNo = btnPressureListNo;
+        this.isTruth = isTruth;
 
 
     }
-
 
 
     public int getId() {
@@ -156,7 +166,11 @@ public class AnswerFeature {
         this.btnPressureMax = btnPressureMax;
     }
 
-    public String getEtAnswer() { return etAnswer; }
+    public String getEtAnswer() {
+        return etAnswer;
+    }
 
-    public void setEtAnswer(String etAnswer) { this.etAnswer = etAnswer; }
+    public void setEtAnswer(String etAnswer) {
+        this.etAnswer = etAnswer;
+    }
 }

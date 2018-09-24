@@ -31,9 +31,11 @@ public class AnswerFeatureDataAccess {
     public static final String ET_ANSWER = "etAnswer";
     public static final String BUTTON_PRESSURE_AVG = "btnPressureListAvg";
     public static final String BUTTON_PRESSURE_NO = "btnPressureListNo";
+    public static final String IS_TRUTH = "isTruth";
 
 
-    private String[] allColumns = {COLUMN_ID, TEST_ID, QUESTION_ID, SENSOR_X, SENSOR_Y, SENSOR_Z, SENSOR_M, ET_DURATION, SB_TRUTH_DURATION, SB_LIE_DURATION, ANSWER_TIME, BUTTON_PRESSURE_MAX, ET_ANSWER, BUTTON_PRESSURE_AVG, BUTTON_PRESSURE_NO};
+
+    private String[] allColumns = {COLUMN_ID, TEST_ID, QUESTION_ID, SENSOR_X, SENSOR_Y, SENSOR_Z, SENSOR_M, ET_DURATION, SB_TRUTH_DURATION, SB_LIE_DURATION, ANSWER_TIME, BUTTON_PRESSURE_MAX, ET_ANSWER, BUTTON_PRESSURE_AVG, BUTTON_PRESSURE_NO, IS_TRUTH};
 
     // Create table SQL query
     public static final String CREATE_TABLE =
@@ -52,7 +54,8 @@ public class AnswerFeatureDataAccess {
                     + BUTTON_PRESSURE_MAX + " REAL,"
                     + ET_ANSWER + " TEXT,"
                     + BUTTON_PRESSURE_AVG + " REAL,"
-                    + BUTTON_PRESSURE_NO + " INT"
+                    + BUTTON_PRESSURE_NO + " INT,"
+                    + IS_TRUTH + " INT"
                     + ")";
 
     public AnswerFeatureDataAccess(Context context) {
@@ -68,7 +71,7 @@ public class AnswerFeatureDataAccess {
     }
 
     public AnswerFeature Create(int testID, int questionId, double sensorX, double sensorY, double sensorZ, double sensorM,
-                                long etDuration, double sbTruth, double sbLie, double answerTime, float btnPressure, String etAnswer, float btnPressureListAvg, int btnPressureListNo)
+                                long etDuration, double sbTruth, double sbLie, double answerTime, float btnPressure, String etAnswer, float btnPressureListAvg, int btnPressureListNo, int isTruth)
     {
         ContentValues values = new ContentValues();
         values.put(TEST_ID, testID);
@@ -85,6 +88,7 @@ public class AnswerFeatureDataAccess {
         values.put(ET_ANSWER, etAnswer);
         values.put(BUTTON_PRESSURE_AVG, btnPressureListAvg);
         values.put(BUTTON_PRESSURE_NO, btnPressureListNo);
+        values.put(IS_TRUTH, isTruth);
 
         long insertId = database.insertOrThrow(TABLE_NAME, null, values);
         Cursor cursor = database.query(TABLE_NAME, allColumns,COLUMN_ID + " = " + insertId, null,
@@ -106,12 +110,15 @@ public class AnswerFeatureDataAccess {
         List<AnswerFeature> answerFeatures = new ArrayList<AnswerFeature>();
 
         Cursor cursor = database.query(TABLE_NAME,
-                allColumns, null, null, null, null, null);
+                allColumns, null, null, null, null, "id desc");
 
         cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
+        int i = 0;
+
+        while (!cursor.isAfterLast() && i<10) {
             AnswerFeature comment = cursorToAnswerFeature(cursor);
             answerFeatures.add(comment);
+            i++;
             cursor.moveToNext();
         }
         // make sure to close the cursor
@@ -136,6 +143,7 @@ public class AnswerFeatureDataAccess {
         values.put(ET_ANSWER, answerFeature.getEtAnswer());
         values.put(BUTTON_PRESSURE_AVG, answerFeature.getBtnPressureListAvg());
         values.put(BUTTON_PRESSURE_NO, answerFeature.getEtAnswer());
+        values.put(IS_TRUTH, answerFeature.getIsTruth());
         database.update(TABLE_NAME, values, COLUMN_ID + " = " + id, null);
     }
 
@@ -158,6 +166,7 @@ public class AnswerFeatureDataAccess {
         answerFeature.setEtAnswer(cursor.getString(12));
         answerFeature.setBtnPressureListAvg(cursor.getFloat(13));
         answerFeature.setBtnPressureListNo(cursor.getInt(14));
+        answerFeature.setIsTruth(cursor.getInt(15));
 
         return answerFeature;
     }
