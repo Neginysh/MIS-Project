@@ -37,6 +37,8 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
     TextView textView;
     EditText editText;
     Button button;
+    TextView lieCounterView;
+    TextView truthCounterView;
     Sensor sensor;
     SensorManager sensorManager;
     float sensorX, sensorY, sensorZ, sensorM;
@@ -58,6 +60,9 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
     float btnPressureListMax = 0;
     float btnPressureListAvg = 0;
     int isTruth = 1;
+    int lieCounter = 0;
+    int truthCounter = 0;
+
 
     List<Question> questions;
     QuestionDataAccess questionDataAccess;
@@ -98,29 +103,41 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
         textView = (TextView) findViewById(R.id.question_a);
         editText = (EditText) findViewById(R.id.answer_a);
         button = (Button) findViewById(R.id.next);
+        lieCounterView = (TextView) findViewById(R.id.lieCounterView);
+        truthCounterView = (TextView) findViewById(R.id.truthCounterView);
+
         editText.clearFocus();
 
         swipeButtonTruth.setOnStateChangeListener(new OnStateChangeListener() {
             @Override
             public void onStateChange(boolean active) {
-                if (active) swipeButtonLie.setEnabled(false);
+                if (active){
+                    truthCounter++;
+                    swipeButtonLie.setEnabled(false);
+                }
                 else swipeButtonLie.setEnabled(true);
 //                Toast.makeText(MainActivity.this, swipeButtonTruth.swipeDuration() + " " + active, Toast.LENGTH_SHORT).show();
                 swipeButtonLieDuration = 0;
                 swipeButtonTruthDuration = swipeButtonTruth.swipeDuration();
                 isTruth = 1;
+                truthCounterView.setText(String.valueOf(truthCounter));
 
             }
         });
         swipeButtonLie.setOnStateChangeListener(new OnStateChangeListener() {
             @Override
             public void onStateChange(boolean active) {
-                if (active) swipeButtonTruth.setEnabled(false);
+
+                if (active) {
+                    lieCounter++;
+                    swipeButtonTruth.setEnabled(false);
+                }
                 else swipeButtonTruth.setEnabled(true);
 //                Toast.makeText(MainActivity.this, swipeButtonLie.swipeDuration() + " " + active, Toast.LENGTH_SHORT).show();
                 swipeButtonTruthDuration = 0;
                 swipeButtonLieDuration = swipeButtonLie.swipeDuration();
                 isTruth = 0;
+                lieCounterView.setText(String.valueOf(lieCounter));
             }
         });
 
@@ -211,9 +228,15 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
 
             answerTime = System.currentTimeMillis() - answerTimeLastDown;
 
+            // store features of each question on DB table
+            answerFeatureDataAccess.open();
+            answerFeatureDataAccess.Create(test.getId(), questions.get(currentQuestionNo).getId(), avgSensorX, avgSensorY, avgSensorZ, avgSensorM, etLastDuration, swipeButtonTruthDuration, swipeButtonLieDuration, answerTime, btnPressureListMax, etAnswer, btnPressureListAvg, btnPressureListNo, isTruth);
+            answerFeatureDataAccess.close();
+
+            fetchNextQuestion();
         }
 
-        fetchNextQuestion();
+
     }
 
 
@@ -294,13 +317,11 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
     }
 
     private void fetchNextQuestion() {
-        answerFeatureDataAccess.open();
-        answerFeatureDataAccess.Create(test.getId(), questions.get(currentQuestionNo).getId(), avgSensorX, avgSensorY, avgSensorZ, avgSensorM, etLastDuration, swipeButtonTruthDuration, swipeButtonLieDuration, answerTime, btnPressureListMax, etAnswer, btnPressureListAvg, btnPressureListNo, isTruth);
-        answerFeatureDataAccess.close();
 
-
-        if (currentQuestionNo < questions.size() - 1)
+        if (currentQuestionNo < questions.size() - 1) {
             currentQuestionNo = currentQuestionNo + 1;
+            sensorManager.registerListener(this, sensor, sensorManager.SENSOR_DELAY_NORMAL);
+        }
 
         else {
             TestResult testResult = new TestResult(this); // to make a json out of the features list to post to server
@@ -310,7 +331,6 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
 
             Intent myIntent = new Intent(MainActivity.this, FinishActivity.class);
             MainActivity.this.startActivity(myIntent);

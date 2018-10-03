@@ -2,18 +2,18 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/relativeLayout"
     tools:context=".MainActivity">
 
     <com.example.lenovocom.lieortruth.SwipeButton
-        android:layout_marginTop="11dp"
         android:id="@+id/swipe_truth_a"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="5dp"
         android:layout_marginStart="5dp"
+        android:layout_marginTop="11dp"
         app:button_background="@drawable/shape_button"
         app:button_bottom_padding="15dp"
         app:button_image_disabled="@drawable/ic_arrow_forward_black_24dp"
@@ -24,7 +24,7 @@
         app:button_right_padding="15dp"
         app:button_top_padding="15dp"
         app:has_activate_state="true"
-        app:initial_state= "disabled"
+        app:initial_state="disabled"
         app:inner_text="Truth"
         app:inner_text_background="@drawable/shape_rounded"
         app:inner_text_bottom_padding="11dp"
@@ -33,12 +33,12 @@
         app:inner_text_top_padding="11dp" />
 
     <com.example.lenovocom.lieortruth.SwipeButton
-        android:layout_marginTop="66dp"
         android:id="@+id/swipe_lie_a"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="5dp"
         android:layout_marginStart="5dp"
+        android:layout_marginTop="66dp"
         app:button_background="@drawable/shape_button"
         app:button_bottom_padding="15dp"
         app:button_image_disabled="@drawable/ic_arrow_forward_black_24dp"
@@ -58,29 +58,68 @@
         app:inner_text_top_padding="11dp" />
 
     <TextView
-        android:layout_marginTop="160dp"
         android:id="@+id/question_a"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="160dp"
         android:text="What is your name?"
-        android:textSize="16sp"/>
+        android:textSize="16sp" />
+
     <LinearLayout
-        android:focusable="true"
-        android:focusableInTouchMode="true"
         android:layout_width="0px"
-        android:layout_height="0px" />
+        android:layout_height="0px"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
+
     <EditText
-        android:focusableInTouchMode="true"
-        android:layout_marginTop="200dp"
         android:id="@+id/answer_a"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="200dp"
+        android:focusableInTouchMode="true" />
+
     <Button
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
         android:id="@+id/next"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Next Question"/>
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:text="Next Question" />
+
+    <TextView
+        android:id="@+id/truthCounter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="false"
+        android:layout_marginBottom="30dp"
+        android:text="No. of truths: " />
+
+    <TextView
+        android:id="@+id/truthCounterView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="false"
+        android:layout_marginBottom="30dp"
+        android:layout_marginLeft="90dp" />
+
+    <TextView
+        android:id="@+id/lieCounter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="false"
+        android:layout_marginBottom="10dp"
+        android:text="No. of lies: " />
+
+    <TextView
+        android:id="@+id/lieCounterView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="false"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="80dp" />
 
 </RelativeLayout>
