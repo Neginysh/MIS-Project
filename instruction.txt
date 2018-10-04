@@ -11,3 +11,5 @@ and answer the question in the edittext, and use the back button on keypad to di
 please fill 5 of the questions by truth and 5 of them by lie, the order is not important at all.
 
 after the test is finished the data will be sent to server for further studies.
+
+Please note that during this study the auto correction and the dictionary provided words offered by the phone's keyboard must not be uset.
