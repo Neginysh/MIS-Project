@@ -2,14 +2,14 @@ install the application apk.
 
 the instruction to test:
 
-the test starts with registeration if you are new to the app.
-each test contains of 10 questions, each question is appeared in one page.
+The test starts with registeration if you are new to the app. fill this part with a nickname and your age.
+Each test contains 10 questions, each question is appeared in one page.
 
-for each question please first read the question and decide if you want to lie or tell the truth. after that slide one of the sliding buttons on top(from left to right).
-and answer the question in the edittext, and use the back button on keypad to disappear the keyboard. after answering the question tap on the button next and repeat the procedure for the next question.
+For each question please first read the question and decide if you want to lie or tell the truth. After that, slide one of the sliding buttons of truth or lie on top(from left to right).
+and answer the question in the edittext, and use the back button on keypad to disappear the keyboard. After answering the question, tap on the button next and repeat the procedure for the next question.
 
-please fill 5 of the questions by truth and 5 of them by lie, the order is not important at all.
+Please fill 5 of the questions by truth and 5 of them by lie, the order is not important at all.
 
-after the test is finished the data will be sent to server for further studies.
+After the test is finished, all the data will be sent to server for further studies.
 
 Please note that during this study the auto correction and the dictionary provided words offered by the phone's keyboard must not be uset.
