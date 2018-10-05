@@ -26,6 +26,7 @@ import android.widget.TextView;
 /**
  * Created by leandroferreira on 07/03/17.
  */
+// reference for the swipe button: https://github.com/ebanx/swipe-button
 
 public class SwipeButton extends RelativeLayout {
 

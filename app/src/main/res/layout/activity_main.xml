@@ -64,62 +64,62 @@
         android:layout_marginTop="160dp"
         android:text="What is your name?"
         android:textSize="16sp" />
+    <!--to remove focus from edittext a LinearLayout is added with width and height of 0. -->
+        <LinearLayout
+            android:layout_width="0px"
+            android:layout_height="0px"
+            android:focusable="true"
+            android:focusableInTouchMode="true" />
 
-    <LinearLayout
-        android:layout_width="0px"
-        android:layout_height="0px"
-        android:focusable="true"
-        android:focusableInTouchMode="true" />
+        <EditText
+            android:id="@+id/answer_a"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="200dp"
+            android:focusableInTouchMode="true" />
 
-    <EditText
-        android:id="@+id/answer_a"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="200dp"
-        android:focusableInTouchMode="true" />
+        <Button
+            android:id="@+id/next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:text="Next Question" />
 
-    <Button
-        android:id="@+id/next"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:text="Next Question" />
+        <TextView
+            android:id="@+id/truthCounter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="false"
+            android:layout_marginBottom="30dp"
+            android:text="No. of truths: " />
 
-    <TextView
-        android:id="@+id/truthCounter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="false"
-        android:layout_marginBottom="30dp"
-        android:text="No. of truths: " />
+        <TextView
+            android:id="@+id/truthCounterView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="false"
+            android:layout_marginBottom="30dp"
+            android:layout_marginLeft="90dp" />
 
-    <TextView
-        android:id="@+id/truthCounterView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="false"
-        android:layout_marginBottom="30dp"
-        android:layout_marginLeft="90dp" />
+        <TextView
+            android:id="@+id/lieCounter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="false"
+            android:layout_marginBottom="10dp"
+            android:text="No. of lies: " />
 
-    <TextView
-        android:id="@+id/lieCounter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="false"
-        android:layout_marginBottom="10dp"
-        android:text="No. of lies: " />
+        <TextView
+            android:id="@+id/lieCounterView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="false"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="80dp" />
 
-    <TextView
-        android:id="@+id/lieCounterView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="false"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="80dp" />
-
-</RelativeLayout>
+    </RelativeLayout>

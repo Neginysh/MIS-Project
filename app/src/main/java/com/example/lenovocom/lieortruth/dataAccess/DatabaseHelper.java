@@ -8,6 +8,8 @@ import com.example.lenovocom.lieortruth.entities.AnswerFeature;
 import com.example.lenovocom.lieortruth.entities.Question;
 import com.example.lenovocom.lieortruth.entities.User;
 
+// reference to make DB: http://www.vogella.com/tutorials/AndroidSQLite/article.html
+
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Database Version

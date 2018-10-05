@@ -2,6 +2,7 @@ package com.example.lenovocom.lieortruth;
 
 import android.content.Context;
 
+// reference: https://github.com/ebanx/swipe-button
 final class DimentionUtils {
 
     private DimentionUtils() {

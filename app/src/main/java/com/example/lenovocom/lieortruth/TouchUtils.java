@@ -1,5 +1,8 @@
 package com.example.lenovocom.lieortruth;
 
+
+// reference: https://github.com/ebanx/swipe-button
+
 import android.view.MotionEvent;
 import android.view.View;
 

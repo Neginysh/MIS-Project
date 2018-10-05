@@ -13,39 +13,7 @@ import java.net.URL;
 
 public class PostToServer {
 
-//    public void postToServer(String answerString) {
-//
-//        AsyncHttpClient client = new AsyncHttpClient();
-//        String url = "http://webislab16.medien.uni-weimar.de:5000/saveAnswers";
-//
-//
-//        client.addHeader("Accept", "application/json");
-//        StringEntity jsonParams = new StringEntity(answerString);
-//
-//        client.post(url, jsonParams, new TextHttpResponseHandler() {
-//            @Override
-//            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-//
-//            }
-//
-//            @Override
-//            public void onSuccess(int statusCode, Header[] headers, String responseString) {
-//
-//            }
-//        });
-////
-////            @Override
-////            public void onSuccess(int statusCode, Header[] headers, JSONObject obj) {
-////                String jsonResponse = obj.toString();
-////                Log.i("TAG", "onSuccess: " + jsonResponse);
-////            }
-////
-////            @Override
-////            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-////                Log.e("TAG", "onFailure: " + errorResponse);
-////            }
-//
-//    }
+
 
     public void Post_JSON(String json) {
        new RetrieveFeedTask().execute(json);
